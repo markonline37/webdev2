@@ -1,0 +1,11 @@
+<html>
+<body>
+<h1>{{topic}}</h1>
+<p>We have the following messages:</p>
+<ol>
+    {{#messages}}
+            <li><a href="http://localhost:9003/message1">{{.}}</a></li>
+    {{/messages}}
+</ol>
+</body>
+</html>
