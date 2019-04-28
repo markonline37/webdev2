@@ -1,7 +1,7 @@
 package milestoner.servlet;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import milestoner.util.DB;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,14 +20,6 @@ public class DeleteProjectServlet extends BaseServlet {
             return;
         }
 
-import java.util.regex.Pattern;
-
-public class DeleteProjectServlet extends BaseServlet {
-
-    private final String PROJECT_TEMPLATE = "project.mustache";
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String value = request.getParameter("deleteID");
         String userID = UserFuncs.getUserID(request);
         DB db = new DB();

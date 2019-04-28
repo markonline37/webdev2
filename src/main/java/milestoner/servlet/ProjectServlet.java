@@ -1,6 +1,5 @@
 package milestoner.servlet;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import milestoner.util.DB;
 
 import javax.servlet.ServletException;
@@ -37,21 +36,6 @@ public class ProjectServlet extends BaseServlet {
                 }
             } while(test);
             db.dbQuery("INSERT INTO project (user, title, sharevalue) VALUES ('"+UserFuncs.getUserID(request)+"', '"+projectName+"', '"+temp+"')");
-
-import java.util.regex.Pattern;
-
-public class ProjectServlet extends BaseServlet {
-
-    private final String PROJECT_TEMPLATE = "project.mustache";
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String projectName = request.getParameter("newProject");
-        DB db = new DB();
-
-        try{
-            db.dbQuery("INSERT INTO project (user, title) VALUES ('"+UserFuncs.getUserID(request)+"', '"+projectName+"')");
-
         } catch (SQLException r){
             r.printStackTrace();
         } catch (ClassNotFoundException t){
