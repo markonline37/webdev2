@@ -20,8 +20,6 @@ public class UpdateMilestoneServlet extends BaseServlet {
             return;
         }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String value = request.getParameter("checkbox");
         DB db = new DB();
 

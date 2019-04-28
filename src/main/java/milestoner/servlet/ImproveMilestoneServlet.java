@@ -19,15 +19,6 @@ public class ImproveMilestoneServlet extends BaseServlet {
             return;
         }
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class ImproveMilestoneServlet extends BaseServlet {
-
-    private final String PROJECT_TEMPLATE = "project.mustache";
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String milestoneID = request.getParameter("milestoneID");
         String projectID = request.getParameter("projectID");
         ProjectPageServlet.reload = projectID;
