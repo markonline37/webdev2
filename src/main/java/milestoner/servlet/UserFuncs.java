@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 
 class UserFuncs {
     @SuppressWarnings("unused")

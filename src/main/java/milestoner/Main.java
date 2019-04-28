@@ -15,7 +15,6 @@ public class Main {
 
 
     private Main() {
-
     }
 
     private void start() throws Exception {

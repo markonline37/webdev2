@@ -10,10 +10,9 @@ import java.io.IOException;
 
 
 public class LogoutServlet extends BaseServlet {
-
-
+    @SuppressWarnings("unused")
     static final Logger LOG = LoggerFactory.getLogger(LogoutServlet.class);
-
+    
     public LogoutServlet() {
 
     }
@@ -28,6 +27,8 @@ public class LogoutServlet extends BaseServlet {
         if (!authOK(request, response)) {
             return;
         }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         UserFuncs.clearCurrentUser(request);
         response.sendRedirect(response.encodeRedirectURL("/login"));
     }

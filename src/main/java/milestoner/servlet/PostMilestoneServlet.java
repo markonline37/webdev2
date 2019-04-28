@@ -19,6 +19,10 @@ public class PostMilestoneServlet extends BaseServlet {
             return;
         }
 
+    private final String PROJECT_TEMPLATE = "project.mustache";
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String projectID = request.getParameter("pmProjectID");
         ProjectPageServlet.reload = projectID;
         String projectTitle = request.getParameter("pmTitle");
