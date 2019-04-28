@@ -1,0 +1,135 @@
+<html>
+<body>
+<style>
+    .booster {min-height: 0px;}
+    [class*="col-"] {width: 100%;}
+    [class*="col-"] {float: left;text-align:left}
+    .row::after {content: "";clear: both;display: table;}
+    .error{color:red;}
+    .middleAlign {margin-left:auto;margin-right:auto;margin-left:0px;}
+    @media only screen and (min-width: 600px) {
+        [class*="col-"] {text-align: center;}
+        .col-5 {width: 50%;}
+        .col-10 {width:100%;}
+        .booster {min-height: 200px;}
+        .middleAlign {margin-left:auto;}
+    }
+</style>
+<div class="row">
+    <div class="col-10">
+        <h1>Milestoner</h1>
+    </div>
+    <div class="booster"></div>
+    <div class="col-5">
+        <h2>Returning Member?</h2>
+        <h3>Login:</h3>
+        <form action="/login" method="POST">
+            <table class="middleAlign">
+                <tr>
+                    <th>
+                        Email:
+                    </th>
+                    <th>
+                        <input id="login_email" type="text" name="email" value="{{email}}">
+                    </th>
+                    <th>
+                        <span class="error" id="login_email_error">{{error1}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Password:
+                    </th>
+                    <th>
+                        <input id="login_password" type="password" name="password" value="">
+                    </th>
+                    <th>
+                        <span class="error" id="login_password_error">{{error2}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <input type="submit" value="Login">
+                    </th>
+                    <th>
+                        <button type="button" onclick="clearLogin()">Clear</button>
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="col-5">
+        <h2>New Member?</h2>
+        <h3>Register:</h3>
+        <form action="/register" method="POST">
+            <table class="middleAlign">
+                <tr>
+                    <th>
+                        Username:
+                    </th>
+                    <th>
+                        <input id="register_username" type="text" name="registerUsername" value="{{reguser}}">
+                    </th>
+                    <th>
+                        <span class="error" id="register_username_error">{{error3}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Email:
+                    </th>
+                    <th>
+                        <input id="register_email" type="text" name="registerEmail" value="{{regemail}}">
+                    </th>
+                    <th>
+                        <span class="error" id="register_email_error">{{error4}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Password:
+                    </th>
+                    <th>
+                        <input id="register_password" type="password" name="registerPassword" value="">
+                    </th>
+                    <th>
+                        <span class="error" id="register_password_error">{{error5}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <input type="submit" value="Register">
+                    </th>
+                    <th>
+                        <button type="button" onclick="clearRegister()">Clear</button>
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    function clearLogin(){
+        document.getElementById("login_email").value = "";
+        document.getElementById("login_password").value = "";
+        document.getElementById("login_email_error").innerHTML = "";
+        document.getElementById("login_password_error").innerHTML = "";
+    }
+
+    function clearRegister(){
+        document.getElementById("register_username").value = "";
+        document.getElementById("register_email").value = "";
+        document.getElementById("register_password").value = "";
+        document.getElementById("register_username_error").innerHTML = "";
+        document.getElementById("register_email_error").innerHTML = "";
+        document.getElementById("register_password_error").innerHTML = "";
+    }
+</script>
+</html>
