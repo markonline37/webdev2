@@ -8,6 +8,16 @@ import java.sql.SQLException;
 
 
 public class PostMilestoneServlet extends BaseServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(response.encodeRedirectURL("/project"));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!authOK(request, response)) {
+            return;
+        }
 
     private final String PROJECT_TEMPLATE = "project.mustache";
 

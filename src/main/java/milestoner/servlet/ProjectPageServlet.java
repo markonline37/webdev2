@@ -25,6 +25,7 @@ public class ProjectPageServlet extends BaseServlet {
     String userID = "";
     List<String> projectID = new ArrayList<>();
     List<String> projectTitle = new ArrayList<>();
+    List<String> projectShare = new ArrayList<>();
 
     public ProjectPageServlet() {
 
@@ -42,6 +43,8 @@ public class ProjectPageServlet extends BaseServlet {
             userID = UserFuncs.getUserID(request);
             username = db.dbString("SELECT username FROM user WHERE id = '"+userID+"'");
             projectID = db.dbArray("SELECT id FROM project WHERE user = '"+userID+"'");
+            projectShare = db.dbArray("SELECT isshared FROM project WHERE user = '"+userID+"'");
+
             if(reload.equals("")){
                 if(projectID.size() > 0){
                     reload = projectID.get(0);
@@ -123,11 +126,19 @@ public class ProjectPageServlet extends BaseServlet {
                 "<div class=\"error\" id=\"newProjectError\"></div></div></span>\n";
         header+="</div>\n";
         header+="</div>\n";
-
+        if(showError){
+            header+="<div class=\"col-10\"><table><tr><th><img class=\"image\"src=\"https://i.imgur.com/9S6KHrj.gif\" alt=\"Hacker Man\" style=\"width:54px;height:85px;\"></th><th><div class=\"error\">Uh Uh Uh<br>"+errorText+"</div></th></tr></table></div>\n";
+        }
+      
         /*
         -----------------------------------------------------------------------
         New Milestone Form
          */
+
+        for(int i = 0; i < projectID.size(); i++){
+            header+="<div id='"+projectTitle.get(i)+"' class=\"tabcontent\">\n";
+            header+="<div class=\"col-5\">\n";
+            header+="<table><tr><th><br><button id=\""+projectID.get(i)+"_newItem\" class=\"\">New Milestone<i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button>\n";
         if(showError){
             header+="<div class=\"col-10\"><table><tr><th><img class=\"image\"src=\"https://i.imgur.com/9S6KHrj.gif\" alt=\"Hacker Man\" style=\"width:54px;height:85px;\"></th><th><div class=\"error\">Uh Uh Uh<br>"+errorText+"</div></th></tr></table></div>\n";
         }
@@ -144,6 +155,7 @@ public class ProjectPageServlet extends BaseServlet {
                     "<input type=\"submit\" value=\"Create\">\n" +
                     "</form>\n" +
                     "<div class=\"error\" id=\"me_"+projectID.get(i)+"\"></div>" +
+                    "</div></th></tr></table>\n";
                     "</div>\n";
             /*
             -----------------------------------------------------------------------
@@ -158,6 +170,13 @@ public class ProjectPageServlet extends BaseServlet {
                     rsMilestones.beforeFirst();
                     while(rsMilestones.next()){
                         header+="<div id=\"milestone_"+rsMilestones.getString("id")+"\" class=\"milestone\">\n";
+                        header+="<button onclick=\"submitEdit("+rsMilestones.getString("id")+")\">Edit Milestone</button>\n";
+                        header+="<h3>"+rsMilestones.getString("title")+"</h3>\n";
+                        header+="<p>"+rsMilestones.getString("description")+"</p>\n";
+                        String t = rsMilestones.getString("startdate");
+                        t = t.substring(0, 10);
+                        String y = rsMilestones.getString("intendeddate");
+                        y = y.substring(0, 10);
                         header+="<button onclick=\"submitEdit("+rsMilestones.getString("id")+")\">Edit Milestone</button>\n" +
                                 "<h3>"+rsMilestones.getString("title")+"</h3>\n";
                         header+="<p>"+rsMilestones.getString("description")+"</p>\n";
@@ -172,7 +191,9 @@ public class ProjectPageServlet extends BaseServlet {
                         header+="<form action=\"/deleteMilestone\" onsubmit=\"return validateDelete()\" name=\"deleteMilestoneForm\" method=\"POST\">\n" +
                                 "<input type=\"hidden\" name=\"deleteID\" value=\""+rsMilestones.getString("id")+"\">\n" +
                                 "<button type=\"submit\">Delete <i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>\n" +
+                                "</form><br>\n";
                                 "</form>\n";
+                      
                         String date = rsMilestones.getString("intendeddate");
                         String year = date.substring(0, 4);
                         String month = date.substring(5, 7);
@@ -204,6 +225,38 @@ public class ProjectPageServlet extends BaseServlet {
                 t.printStackTrace();
             }
             header+="</div>\n";
+            header+="<div class=\"col-5\">\n" +
+                    "<br><table><tr>";
+            //delete project form
+            header+="<th><form action=\"/deleteProject\" onsubmit=\"return validateDeleteProject()\" name=\"deleteProjectForm\" method=\"POST\">\n" +
+                    "<input type=\"hidden\" name=\"deleteID\" value=\""+projectID.get(i)+"\">\n" +
+                    "<button type=\"submit\">Delete Entire Project <i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>\n" +
+                    "</form></th>\n";
+            //share project
+
+            if(projectShare.get(i).equals("0")){
+                header+="<th><form action=\"/enableShare\" name=\"toggleShareForm method=\"POST\">\n" +
+                        "<input type=\"hidden\" name=\"toggleID\" value=\""+projectID.get(i)+"\">\n" +
+                        "<button type=\"submit\">Share Project <i class=\"fa fa-share-alt\" aria-hidden=\"true\"></i></button>\n" +
+                        "</form></th>";
+            } else {
+                header+="<th><form action=\"/disableShare\" name=\"toggleShareForm method=\"POST\">\n" +
+                        "<input type=\"hidden\" name=\"toggleID\" value=\""+projectID.get(i)+"\">\n" +
+                        "<button type=\"submit\">Stop Sharing Project <i class=\"fa fa-share-alt\" aria-hidden=\"true\"></i></button>\n" +
+                        "</form></th>";
+                try {
+                    String temp = db.dbString("SELECT sharevalue FROM project WHERE id = '"+projectID.get(i)+"'");
+                    String url = DB.url + "/share?id="+temp;
+                    header+="<th><input type=\"text\" value=\""+url+"\" id=\""+projectID.get(i)+"_share"+"\"></th>\n" +
+                            "<th><button onclick=\"shareFunction('"+projectID.get(i)+"_share"+"')\">Copy Link</button></th>\n";
+                } catch (SQLException e){
+                    e.printStackTrace();
+                } catch (ClassNotFoundException t){
+                    t.printStackTrace();
+                }
+            }
+            header+="</tr></table>";
+
             /*
             -----------------------------------------------------------------------
             Each completed milestone
@@ -213,6 +266,7 @@ public class ProjectPageServlet extends BaseServlet {
                     "<input type=\"hidden\" name=\"deleteID\" value=\""+projectID.get(i)+"\">\n" +
                     "<button type=\"submit\">Delete Entire Project <i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>\n" +
                     "</form>\n";
+
             header+="<h2>Completed</h2>\n";
             try{
                 ResultSet rs = db.dbRS("SELECT * FROM milestone WHERE userid = '"+userID+"' AND isfinished = '1' AND project = '"+projectID.get(i)+"'");
@@ -225,9 +279,12 @@ public class ProjectPageServlet extends BaseServlet {
                     header+="<h3>"+rs.getString("title")+"</h3>\n";
                     header+="<p>"+rs.getString("description")+"</p>\n";
                     String t = rs.getString("startdate");
-                    t = t.substring(0, 9);
+                    t = t.substring(0, 10);
                     String y = rs.getString("intendeddate");
-                    y = y.substring(0, 9);
+                    y = y.substring(0, 10);
+                    t = t.substring(0, 10);
+                    String y = rs.getString("intendeddate");
+                    y = y.substring(0, 10);
                     header+="<table class=\"tempTable\"><tr><th></th><th>(YYYY-MM-DD)</th></tr><tr><th>Date Added:</th><th>"+t+"</th></tr>\n" +
                             "<tr><th>Intended Due Date:</th><th>"+y+"</th></tr>\n";
                     String s = rs.getString("enddate");
@@ -238,6 +295,7 @@ public class ProjectPageServlet extends BaseServlet {
                             "<form action=\"/deleteMilestone\" onsubmit=\"return validateDelete()\" name=\"deleteMilestoneForm\" method=\"POST\">\n" +
                             "<input type=\"hidden\" name=\"deleteID\" value=\""+rs.getString("id")+"\">\n" +
                             "<button type=\"submit\">Delete <i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>\n" +
+                            "</form><br>\n";
                             "</form>\n";
                     header+="</div><br>\n";
                 }
@@ -298,6 +356,13 @@ public class ProjectPageServlet extends BaseServlet {
                 "       return false;\n" +
                 "   }\n" +
                 "};\n\n";
+        footer+="function shareFunction(input){\n" +
+                "var text = document.getElementById(input);\n" +
+                "text.select();\n" +
+                "document.execCommand(\"copy\");\n" +
+                "alert(\"Copied link to clipboard: \"+ text.value);" +
+                "}\n\n";
+
         footer+="function validateNewMilestoneForm(projectID){\n" +
                 "   var title = \"postMilestoneForm\"+projectID;\n" +
                 "   var x = document.forms[title][\"pmTitle\"].value;\n" +

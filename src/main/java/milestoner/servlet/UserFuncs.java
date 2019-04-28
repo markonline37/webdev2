@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 class UserFuncs {
     @SuppressWarnings("unused")
     static final Logger LOG = LoggerFactory.getLogger(UserFuncs.class);

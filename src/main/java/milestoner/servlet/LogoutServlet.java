@@ -12,12 +12,21 @@ import java.io.IOException;
 public class LogoutServlet extends BaseServlet {
     @SuppressWarnings("unused")
     static final Logger LOG = LoggerFactory.getLogger(LogoutServlet.class);
-
+    
     public LogoutServlet() {
 
     }
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(response.encodeRedirectURL("/project"));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!authOK(request, response)) {
+            return;
+        }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserFuncs.clearCurrentUser(request);

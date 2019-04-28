@@ -37,6 +37,10 @@ public class Main {
         handler.addServlet(new ServletHolder(new DeleteProjectServlet()), "/deleteProject");
         handler.addServlet(new ServletHolder(new ImproveMilestoneServlet()), "/improveMilestone");
         handler.addServlet(new ServletHolder(new LogoutServlet()), "/logout");
+        handler.addServlet(new ServletHolder(new DisableShareServlet()), "/disableShare");
+        handler.addServlet(new ServletHolder(new EnableShareServlet()), "/enableShare");
+        handler.addServlet(new ServletHolder(new LinkHandlerServlet()), "/share");
+
         server.start();
         LOG.info("Server started, will run until terminated");
         server.join();

@@ -8,6 +8,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+
+public class ProjectServlet extends BaseServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(response.encodeRedirectURL("/project"));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!authOK(request, response)) {
+            return;
+        }
+
+        String projectName = request.getParameter("newProject");
+        if(projectName.equals("") || projectName == null){
+            response.sendRedirect(response.encodeRedirectURL("/project"));
+        }
+        DB db = new DB();
+
+        try{
+            String temp = "";
+            boolean test = true;
+            do{
+                temp = gen();
+                if(!db.dbBoolean("SELECT sharevalue FROM project WHERE sharevalue = '"+temp+"'")){
+                    test = false;
+                }
+            } while(test);
+            db.dbQuery("INSERT INTO project (user, title, sharevalue) VALUES ('"+UserFuncs.getUserID(request)+"', '"+projectName+"', '"+temp+"')");
+
 import java.util.regex.Pattern;
 
 public class ProjectServlet extends BaseServlet {
@@ -21,6 +51,7 @@ public class ProjectServlet extends BaseServlet {
 
         try{
             db.dbQuery("INSERT INTO project (user, title) VALUES ('"+UserFuncs.getUserID(request)+"', '"+projectName+"')");
+
         } catch (SQLException r){
             r.printStackTrace();
         } catch (ClassNotFoundException t){
@@ -28,5 +59,16 @@ public class ProjectServlet extends BaseServlet {
         } finally {
             response.sendRedirect(response.encodeRedirectURL("/project"));
         }
+    }
+
+    String gen(){
+        int n = 16;
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz";
+        StringBuilder sb = new StringBuilder(n);
+        for(int i = 0; i < n; i++){
+            int index = (int)(AlphaNumericString.length()*Math.random());
+            sb.append(AlphaNumericString.charAt(index));
+        }
+        return sb.toString();
     }
 }
